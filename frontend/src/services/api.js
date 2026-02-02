@@ -53,4 +53,16 @@ export const reportsAPI = {
   getDashboard: () => api.get('/reports/dashboard'),
 };
 
+// Users API
+export const usersAPI = {
+  login: (data) => api.post('/users/login', data),
+  getAll: () => api.get('/users'),
+  getById: (id) => api.get(`/users/${id}`),
+  create: (data) => api.post('/users', data),
+  update: (id, data) => api.put(`/users/${id}`, data),
+  changePassword: (id, data) => api.put(`/users/${id}/password`, data),
+  toggleStatus: (id) => api.put(`/users/${id}/toggle-status`),
+  delete: (id) => api.delete(`/users/${id}`),
+};
+
 export default api;

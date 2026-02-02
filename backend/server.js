@@ -10,6 +10,7 @@ const pricingRoutes = require('./routes/pricing');
 const salesRoutes = require('./routes/sales');
 const inventoryRoutes = require('./routes/inventory');
 const reportsRoutes = require('./routes/reports');
+const usersRoutes = require('./routes/users');
 
 // Initialize express app
 const app = express();
@@ -28,6 +29,7 @@ app.use('/api/pricing', pricingRoutes);
 app.use('/api/sales', salesRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/reports', reportsRoutes);
+app.use('/api/users', usersRoutes);
 
 // Root route
 app.get('/', (req, res) => {

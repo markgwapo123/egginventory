@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 
-const Navbar = () => {
+const Navbar = ({ onLogout }) => {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
@@ -15,6 +15,13 @@ const Navbar = () => {
 
   const closeMenu = () => {
     setIsOpen(false);
+  };
+
+  const handleLogout = () => {
+    closeMenu();
+    if (onLogout) {
+      onLogout();
+    }
   };
 
   return (
@@ -31,6 +38,9 @@ const Navbar = () => {
           <li><Link to="/pricing" className={isActive('/pricing')} onClick={closeMenu}>Pricing</Link></li>
           <li><Link to="/sales" className={isActive('/sales')} onClick={closeMenu}>Sales</Link></li>
           <li><Link to="/reports" className={isActive('/reports')} onClick={closeMenu}>Reports</Link></li>
+          <li><Link to="/users" className={isActive('/users')} onClick={closeMenu}>Users</Link></li>
+          <li><Link to="/profile" className={isActive('/profile')} onClick={closeMenu}>Profile</Link></li>
+          <li><button className="logout-btn" onClick={handleLogout}>Logout</button></li>
         </ul>
       </div>
     </nav>
