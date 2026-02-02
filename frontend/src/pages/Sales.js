@@ -13,23 +13,25 @@ const Sales = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
 
+  const fetchInitialData = async () => {
+    try {
+      const [pricingRes, inventoryRes, salesRes] = await Promise.all([
+        pricingAPI.getAll(),
+        inventoryAPI.getByDate(selectedDate),
+        salesAPI.getByDate(selectedDate)
+      ]);
+      setPricing(pricingRes.data);
+      setInventory(inventoryRes.data);
+      setSales(salesRes.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setInventory(null);
+    }
+  };
+
   useEffect(() => {
-    const fetchInitialData = async () => {
-      try {
-        const [pricingRes, inventoryRes, salesRes] = await Promise.all([
-          pricingAPI.getAll(),
-          inventoryAPI.getByDate(selectedDate),
-          salesAPI.getByDate(selectedDate)
-        ]);
-        setPricing(pricingRes.data);
-        setInventory(inventoryRes.data);
-        setSales(salesRes.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setInventory(null);
-      }
-    };
     fetchInitialData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDate]);
 
   const addItem = () => {
