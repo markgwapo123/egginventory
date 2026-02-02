@@ -5,7 +5,10 @@ const eggSizeSchema = new mongoose.Schema({
   pullets: { type: Number, default: 0 },
   small: { type: Number, default: 0 },
   medium: { type: Number, default: 0 },
-  large: { type: Number, default: 0 }
+  large: { type: Number, default: 0 },
+  xlarge: { type: Number, default: 0 },
+  jumbo: { type: Number, default: 0 },
+  crack: { type: Number, default: 0 }
 });
 
 const productionSchema = new mongoose.Schema({
@@ -30,7 +33,7 @@ const productionSchema = new mongoose.Schema({
 
 // Calculate totals before saving
 productionSchema.pre('save', function(next) {
-  const sizes = ['peewee', 'pullets', 'small', 'medium', 'large'];
+  const sizes = ['peewee', 'pullets', 'small', 'medium', 'large', 'xlarge', 'jumbo', 'crack'];
   
   // Initialize endingBalance if not exists
   if (!this.endingBalance) {

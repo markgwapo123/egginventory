@@ -4,7 +4,7 @@ const pricingSchema = new mongoose.Schema({
   size: {
     type: String,
     required: true,
-    enum: ['peewee', 'pullets', 'small', 'medium', 'large'],
+    enum: ['peewee', 'pullets', 'small', 'medium', 'large', 'xlarge', 'jumbo', 'crack'],
     unique: true
   },
   pricePerTray: {

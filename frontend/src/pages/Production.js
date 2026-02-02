@@ -9,7 +9,10 @@ const Production = () => {
     pullets: '',
     small: '',
     medium: '',
-    large: ''
+    large: '',
+    xlarge: '',
+    jumbo: '',
+    crack: ''
   });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ text: '', type: '' });
@@ -47,13 +50,16 @@ const Production = () => {
       pullets: parseInt(harvested.pullets) || 0,
       small: parseInt(harvested.small) || 0,
       medium: parseInt(harvested.medium) || 0,
-      large: parseInt(harvested.large) || 0
+      large: parseInt(harvested.large) || 0,
+      xlarge: parseInt(harvested.xlarge) || 0,
+      jumbo: parseInt(harvested.jumbo) || 0,
+      crack: parseInt(harvested.crack) || 0
     };
 
     try {
       await productionAPI.create({ date: selectedDate, harvested: harvestedData });
       setMessage({ text: '✓ Production recorded successfully!', type: 'success' });
-      setHarvested({ peewee: '', pullets: '', small: '', medium: '', large: '' });
+      setHarvested({ peewee: '', pullets: '', small: '', medium: '', large: '', xlarge: '', jumbo: '', crack: '' });
       fetchProductions();
     } catch (error) {
       setMessage({ 
@@ -97,15 +103,15 @@ const Production = () => {
   // Calculate totals for a date group
   const calculateDateTotals = (prods) => {
     const totals = {
-      beginningBalance: { peewee: 0, pullets: 0, small: 0, medium: 0, large: 0 },
-      harvested: { peewee: 0, pullets: 0, small: 0, medium: 0, large: 0 },
-      endingBalance: { peewee: 0, pullets: 0, small: 0, medium: 0, large: 0 },
+      beginningBalance: { peewee: 0, pullets: 0, small: 0, medium: 0, large: 0, xlarge: 0, jumbo: 0, crack: 0 },
+      harvested: { peewee: 0, pullets: 0, small: 0, medium: 0, large: 0, xlarge: 0, jumbo: 0, crack: 0 },
+      endingBalance: { peewee: 0, pullets: 0, small: 0, medium: 0, large: 0, xlarge: 0, jumbo: 0, crack: 0 },
       totalEggs: 0,
       totalTrays: 0
     };
 
     prods.forEach(prod => {
-      ['peewee', 'pullets', 'small', 'medium', 'large'].forEach(size => {
+      ['peewee', 'pullets', 'small', 'medium', 'large', 'xlarge', 'jumbo', 'crack'].forEach(size => {
         totals.beginningBalance[size] += prod.beginningBalance[size] || 0;
         totals.harvested[size] += prod.harvested[size] || 0;
         totals.endingBalance[size] += prod.endingBalance[size] || 0;
@@ -122,7 +128,10 @@ const Production = () => {
     { key: 'pullets', label: 'Pullets', icon: '🥚' },
     { key: 'small', label: 'Small', icon: '🥚' },
     { key: 'medium', label: 'Medium', icon: '🥚' },
-    { key: 'large', label: 'Large', icon: '🥚' }
+    { key: 'large', label: 'Large', icon: '🥚' },
+    { key: 'xlarge', label: 'Xlarge', icon: '🥚' },
+    { key: 'jumbo', label: 'Jumbo', icon: '🥚' },
+    { key: 'crack', label: 'Crack', icon: '🥚' }
   ];
 
   return (
