@@ -14,24 +14,23 @@ const Sales = () => {
   const [message, setMessage] = useState({ text: '', type: '' });
 
   useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const [pricingRes, inventoryRes, salesRes] = await Promise.all([
+          pricingAPI.getAll(),
+          inventoryAPI.getByDate(selectedDate),
+          salesAPI.getByDate(selectedDate)
+        ]);
+        setPricing(pricingRes.data);
+        setInventory(inventoryRes.data);
+        setSales(salesRes.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setInventory(null);
+      }
+    };
     fetchInitialData();
   }, [selectedDate]);
-
-  const fetchInitialData = async () => {
-    try {
-      const [pricingRes, inventoryRes, salesRes] = await Promise.all([
-        pricingAPI.getAll(),
-        inventoryAPI.getByDate(selectedDate),
-        salesAPI.getByDate(selectedDate)
-      ]);
-      setPricing(pricingRes.data);
-      setInventory(inventoryRes.data);
-      setSales(salesRes.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      setInventory(null);
-    }
-  };
 
   const addItem = () => {
     setItems([...items, { size: 'peewee', trays: 0, pieces: 0 }]);
