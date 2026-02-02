@@ -99,15 +99,15 @@ router.get('/dashboard', async (req, res) => {
       todayProduction = {
         totalEggs: 0,
         totalTrays: 0,
-        harvested: { peewee: 0, pullets: 0, small: 0, medium: 0, large: 0 },
-        beginningBalance: { peewee: 0, pullets: 0, small: 0, medium: 0, large: 0 },
-        endingBalance: { peewee: 0, pullets: 0, small: 0, medium: 0, large: 0 }
+        harvested: { peewee: 0, pullets: 0, small: 0, medium: 0, large: 0, xlarge: 0, jumbo: 0, crack: 0 },
+        beginningBalance: { peewee: 0, pullets: 0, small: 0, medium: 0, large: 0, xlarge: 0, jumbo: 0, crack: 0 },
+        endingBalance: { peewee: 0, pullets: 0, small: 0, medium: 0, large: 0, xlarge: 0, jumbo: 0, crack: 0 }
       };
       
       todayProductions.forEach(prod => {
         todayProduction.totalEggs += prod.totalEggs || 0;
         todayProduction.totalTrays += prod.totalTrays || 0;
-        ['peewee', 'pullets', 'small', 'medium', 'large'].forEach(size => {
+        ['peewee', 'pullets', 'small', 'medium', 'large', 'xlarge', 'jumbo', 'crack'].forEach(size => {
           todayProduction.harvested[size] += prod.harvested[size] || 0;
           todayProduction.beginningBalance[size] += prod.beginningBalance[size] || 0;
           todayProduction.endingBalance[size] += prod.endingBalance[size] || 0;
@@ -122,24 +122,58 @@ router.get('/dashboard', async (req, res) => {
     
     const totalIncome = todaySales.reduce((sum, sale) => sum + sale.totalAmount, 0);
     
-    // Get current inventory from latest production record
+    // Calculate sales by size for today
+    const todaySalesBySize = {
+      peewee: 0, pullets: 0, small: 0, medium: 0, large: 0, xlarge: 0, jumbo: 0, crack: 0
+    };
+    
+    todaySales.forEach(sale => {
+      sale.items.forEach(item => {
+        const totalPieces = (item.trays * 30) + item.pieces;
+        todaySalesBySize[item.size] += totalPieces;
+      });
+    });
+    
+    // Get current inventory from latest production record and subtract ALL sales to date
     const latestProduction = await Production.findOne().sort({ date: -1, createdAt: -1 });
     
     let currentInventory = null;
     if (latestProduction) {
-      const sizes = ['peewee', 'pullets', 'small', 'medium', 'large'];
-      const totalEggs = sizes.reduce((sum, size) => sum + (latestProduction.endingBalance[size] || 0), 0);
+      // Get ALL sales from the latest production date until now
+      const allSalesFromProduction = await Sales.find({
+        date: { $gte: latestProduction.date }
+      });
       
+      // Calculate total sales by size since latest production
+      const totalSalesBySize = {
+        peewee: 0, pullets: 0, small: 0, medium: 0, large: 0, xlarge: 0, jumbo: 0, crack: 0
+      };
+      
+      allSalesFromProduction.forEach(sale => {
+        sale.items.forEach(item => {
+          const totalPieces = (item.trays * 30) + item.pieces;
+          totalSalesBySize[item.size] += totalPieces;
+        });
+      });
+      
+      const sizes = ['peewee', 'pullets', 'small', 'medium', 'large', 'xlarge', 'jumbo', 'crack'];
+      
+      // Calculate remaining stock: production ending balance - sales
       currentInventory = {
-        peewee: latestProduction.endingBalance.peewee || 0,
-        pullets: latestProduction.endingBalance.pullets || 0,
-        small: latestProduction.endingBalance.small || 0,
-        medium: latestProduction.endingBalance.medium || 0,
-        large: latestProduction.endingBalance.large || 0,
-        totalEggs: totalEggs,
-        totalTrays: Math.floor(totalEggs / 30),
+        peewee: Math.max(0, (latestProduction.endingBalance.peewee || 0) - totalSalesBySize.peewee),
+        pullets: Math.max(0, (latestProduction.endingBalance.pullets || 0) - totalSalesBySize.pullets),
+        small: Math.max(0, (latestProduction.endingBalance.small || 0) - totalSalesBySize.small),
+        medium: Math.max(0, (latestProduction.endingBalance.medium || 0) - totalSalesBySize.medium),
+        large: Math.max(0, (latestProduction.endingBalance.large || 0) - totalSalesBySize.large),
+        xlarge: Math.max(0, (latestProduction.endingBalance.xlarge || 0) - totalSalesBySize.xlarge),
+        jumbo: Math.max(0, (latestProduction.endingBalance.jumbo || 0) - totalSalesBySize.jumbo),
+        crack: Math.max(0, (latestProduction.endingBalance.crack || 0) - totalSalesBySize.crack),
         date: latestProduction.date
       };
+      
+      // Calculate totals
+      currentInventory.totalEggs = sizes.reduce((sum, size) => sum + currentInventory[size], 0);
+      currentInventory.totalTrays = Math.floor(currentInventory.totalEggs / 30);
     }
     
     // Get current inventory from Inventory collection as fallback
