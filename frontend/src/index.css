@@ -1099,6 +1099,270 @@ tbody tr.detail-row td:first-child {
   gap: 0.5rem;
 }
 
+/* Production History Cards */
+.production-history {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.production-day-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.3s ease;
+}
+
+.production-day-card:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.production-day-header {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: white;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.production-day-header.clickable {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.production-day-header.clickable:hover {
+  background: linear-gradient(135deg, #34495e 0%, #3d5266 100%);
+}
+
+.date-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.date-icon {
+  font-size: 1.5rem;
+}
+
+.date-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.entry-badge {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.day-summary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.summary-label {
+  opacity: 0.9;
+  font-size: 0.9rem;
+}
+
+.summary-value {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #ffd700;
+}
+
+.expand-arrow {
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.expand-arrow.expanded {
+  transform: rotate(180deg);
+}
+
+.production-details {
+  transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+.production-details.visible {
+  max-height: none;
+  opacity: 1;
+}
+
+.production-details.hidden {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.production-entry {
+  padding: 1.5rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.production-entry:last-child {
+  border-bottom: none;
+}
+
+.entry-number {
+  font-size: 0.9rem;
+  color: #7f8c8d;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  padding-left: 1rem;
+  border-left: 3px solid #3498db;
+}
+
+.egg-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.egg-section {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  border-left: 4px solid;
+}
+
+.egg-section.beginning-section {
+  border-left-color: #f39c12;
+}
+
+.egg-section.harvest-section {
+  border-left-color: #27ae60;
+}
+
+.egg-section.ending-section {
+  border-left-color: #3498db;
+}
+
+.section-title {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.egg-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.egg-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background: white;
+  border-radius: 6px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.egg-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.egg-label {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  font-weight: 500;
+}
+
+.egg-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.egg-value.highlight {
+  color: #27ae60;
+  font-size: 1.1rem;
+}
+
+.production-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 2px solid #e0e0e0;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.total-info {
+  font-size: 1rem;
+  color: #2c3e50;
+}
+
+.total-info strong {
+  color: #3498db;
+  font-size: 1.1rem;
+}
+
+/* Responsive Design for Production History */
+@media (max-width: 768px) {
+  .production-day-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .day-summary {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .egg-sections {
+    grid-template-columns: 1fr;
+  }
+
+  .egg-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .production-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .production-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .date-text {
+    font-size: 1rem;
+  }
+
+  .production-entry {
+    padding: 1rem;
+  }
+}
+
 .password-input-group input {
   flex: 1;
 }

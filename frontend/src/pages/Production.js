@@ -312,152 +312,116 @@ const Production = () => {
           </h2>
         </div>
 
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th rowSpan="2" style={{ minWidth: '150px', position: 'sticky', left: 0, background: '#2c3e50', zIndex: 2 }}>
-                  Date
-                </th>
-                <th colSpan="5" style={{ background: '#f39c12', color: 'white' }}>
-                  📥 Beginning Stock
-                </th>
-                <th colSpan="5" style={{ background: '#27ae60', color: 'white' }}>
-                  🌅 Harvested Today
-                </th>
-                <th colSpan="5" style={{ background: '#3498db', color: 'white' }}>
-                  📦 Ending Stock
-                </th>
-                <th rowSpan="2" style={{ minWidth: '80px' }}>Trays</th>
-                <th rowSpan="2" style={{ minWidth: '100px' }}>Actions</th>
-              </tr>
-              <tr>
-                {[...Array(3)].map((_, groupIndex) => (
-                  eggSizes.map(({ label }) => (
-                    <th key={`${groupIndex}-${label}`} style={{
-                      background: groupIndex === 0 ? '#2d3436' : groupIndex === 1 ? '#2d3436' : '#2d3436',
-                      color: groupIndex === 0 ? '#ffeaa7' : groupIndex === 1 ? '#55efc4' : '#74b9ff',
-                      fontSize: '0.8rem'
-                    }}>
-                      {label}
-                    </th>
-                  ))
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {productions.length === 0 ? (
-                <tr>
-                  <td colSpan="18" style={{ textAlign: 'center', padding: '3rem', color: '#95a5a6' }}>
-                    📭 No production records found
-                  </td>
-                </tr>
-              ) : (
-                Object.entries(groupedProductions).map(([dateKey, prods]) => {
-                  const isExpanded = expandedDates[dateKey];
-                  const hasMultiple = prods.length > 1;
-                  const totals = calculateDateTotals(prods);
+        {productions.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '3rem', color: '#95a5a6' }}>
+            📭 No production records found
+          </div>
+        ) : (
+          <div className="production-history">
+            {Object.entries(groupedProductions).map(([dateKey, prods]) => {
+              const isExpanded = expandedDates[dateKey];
+              const hasMultiple = prods.length > 1;
+              const totals = calculateDateTotals(prods);
 
-                  return (
-                    <React.Fragment key={dateKey}>
-                      <tr 
-                        className={hasMultiple ? 'expandable-row' : ''}
-                        onClick={() => hasMultiple && toggleDateExpand(dateKey)}
-                      >
-                        <td style={{ 
-                          textAlign: 'left', 
-                          fontWeight: '600',
-                          position: 'sticky',
-                          left: 0,
-                          background: hasMultiple ? '#34495e' : '#2d3436',
-                          zIndex: 1
-                        }}>
-                          <span>📅 {dateKey}</span>
-                          {hasMultiple && (
-                            <>
-                              <span className="entry-count">{prods.length}</span>
-                              <span className={`expand-icon ${isExpanded ? 'expanded' : ''}`}>
-                                ►
-                              </span>
-                            </>
-                          )}
-                        </td>
-                        {eggSizes.map(({ key }) => (
-                          <td key={`begin-${key}`} className="col-group-beginning">
-                            {totals.beginningBalance[key]}
-                          </td>
-                        ))}
-                        {eggSizes.map(({ key }) => (
-                          <td key={`harvest-${key}`} className="col-group-harvest">
-                            {totals.harvested[key]}
-                          </td>
-                        ))}
-                        {eggSizes.map(({ key }) => (
-                          <td key={`end-${key}`} className="col-group-ending">
-                            {totals.endingBalance[key]}
-                          </td>
-                        ))}
-                        <td style={{ fontWeight: '700' }}>{totals.totalTrays}</td>
-                        <td>
-                          {!hasMultiple && (
-                            <button 
-                              className="btn btn-danger" 
-                              onClick={() => handleDelete(prods[0]._id)}
-                              style={{ padding: '0.5rem 0.75rem', fontSize: '0.85rem' }}
-                            >
-                              🗑️
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                      {hasMultiple && isExpanded && prods.map((prod, index) => (
-                        <tr key={prod._id} className="detail-row">
-                          <td style={{ 
-                            textAlign: 'left',
-                            position: 'sticky',
-                            left: 0,
-                            background: '#2c3e50',
-                            zIndex: 1
-                          }}>
-                            ↳ Entry {index + 1}
-                          </td>
-                          {eggSizes.map(({ key }) => (
-                            <td key={`begin-${key}`} className="col-group-beginning">
-                              {prod.beginningBalance[key]}
-                            </td>
-                          ))}
-                          {eggSizes.map(({ key }) => (
-                            <td key={`harvest-${key}`} className="col-group-harvest">
-                              {prod.harvested[key]}
-                            </td>
-                          ))}
-                          {eggSizes.map(({ key }) => (
-                            <td key={`end-${key}`} className="col-group-ending">
-                              {prod.endingBalance[key]}
-                            </td>
-                          ))}
-                          <td>{prod.totalTrays}</td>
-                          <td>
-                            <button 
-                              className="btn btn-danger" 
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDelete(prod._id);
-                              }}
-                              style={{ padding: '0.5rem 0.75rem', fontSize: '0.85rem' }}
-                            >
-                              🗑️
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </React.Fragment>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+              return (
+                <div key={dateKey} className="production-day-card">
+                  {/* Date Header */}
+                  <div 
+                    className={`production-day-header ${hasMultiple ? 'clickable' : ''}`}
+                    onClick={() => hasMultiple && toggleDateExpand(dateKey)}
+                  >
+                    <div className="date-info">
+                      <span className="date-icon">📅</span>
+                      <span className="date-text">{dateKey}</span>
+                      {hasMultiple && (
+                        <span className="entry-badge">{prods.length} entries</span>
+                      )}
+                    </div>
+                    <div className="day-summary">
+                      <span className="summary-item">
+                        <span className="summary-label">Harvested:</span>
+                        <span className="summary-value">{totals.totalTrays} trays</span>
+                      </span>
+                      {hasMultiple && (
+                        <span className={`expand-arrow ${isExpanded ? 'expanded' : ''}`}>
+                          ▼
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Production Details */}
+                  <div className={`production-details ${(!hasMultiple || isExpanded) ? 'visible' : 'hidden'}`}>
+                    {prods.map((prod, index) => (
+                      <div key={prod._id} className="production-entry">
+                        {hasMultiple && (
+                          <div className="entry-number">Entry {index + 1}</div>
+                        )}
+                        
+                        <div className="egg-sections">
+                          {/* Beginning Stock */}
+                          <div className="egg-section beginning-section">
+                            <h4 className="section-title">📥 Beginning Stock</h4>
+                            <div className="egg-grid">
+                              {eggSizes.map(({ key, label }) => (
+                                <div key={key} className="egg-item">
+                                  <span className="egg-label">{label}</span>
+                                  <span className="egg-value">{prod.beginningBalance[key]}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Harvested Today */}
+                          <div className="egg-section harvest-section">
+                            <h4 className="section-title">🌅 Harvested Today</h4>
+                            <div className="egg-grid">
+                              {eggSizes.map(({ key, label }) => (
+                                <div key={key} className="egg-item">
+                                  <span className="egg-label">{label}</span>
+                                  <span className="egg-value highlight">{prod.harvested[key]}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Ending Stock */}
+                          <div className="egg-section ending-section">
+                            <h4 className="section-title">📦 Ending Stock</h4>
+                            <div className="egg-grid">
+                              {eggSizes.map(({ key, label }) => (
+                                <div key={key} className="egg-item">
+                                  <span className="egg-label">{label}</span>
+                                  <span className="egg-value">{prod.endingBalance[key]}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="production-actions">
+                          <div className="total-info">
+                            Total: <strong>{prod.totalTrays} trays</strong>
+                          </div>
+                          <button 
+                            className="btn btn-danger" 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDelete(prod._id);
+                            }}
+                          >
+                            🗑️ Delete
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
