@@ -55,7 +55,7 @@ const Inventory = () => {
       {currentInventory && (
         <div className="card">
           <h2>Current Inventory Summary</h2>
-          <div className="grid grid-5">
+          <div className="grid grid-4" style={{ gap: '1rem' }}>
             <div style={{ textAlign: 'center', padding: '1rem', background: '#ecf0f1', borderRadius: '8px' }}>
               <h3 style={{ fontSize: '1rem', marginBottom: '0.5rem', color: '#7f8c8d' }}>Peewee</h3>
               <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#2c3e50' }}>{currentInventory.peewee}</p>
@@ -91,6 +91,27 @@ const Inventory = () => {
                 {Math.floor(currentInventory.large / 30)} trays
               </p>
             </div>
+            <div style={{ textAlign: 'center', padding: '1rem', background: '#ecf0f1', borderRadius: '8px' }}>
+              <h3 style={{ fontSize: '1rem', marginBottom: '0.5rem', color: '#7f8c8d' }}>Xlarge</h3>
+              <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#2c3e50' }}>{currentInventory.xlarge}</p>
+              <p style={{ fontSize: '0.9rem', color: '#95a5a6' }}>
+                {Math.floor(currentInventory.xlarge / 30)} trays
+              </p>
+            </div>
+            <div style={{ textAlign: 'center', padding: '1rem', background: '#ecf0f1', borderRadius: '8px' }}>
+              <h3 style={{ fontSize: '1rem', marginBottom: '0.5rem', color: '#7f8c8d' }}>Jumbo</h3>
+              <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#2c3e50' }}>{currentInventory.jumbo}</p>
+              <p style={{ fontSize: '0.9rem', color: '#95a5a6' }}>
+                {Math.floor(currentInventory.jumbo / 30)} trays
+              </p>
+            </div>
+            <div style={{ textAlign: 'center', padding: '1rem', background: '#ecf0f1', borderRadius: '8px' }}>
+              <h3 style={{ fontSize: '1rem', marginBottom: '0.5rem', color: '#7f8c8d' }}>Crack</h3>
+              <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#2c3e50' }}>{currentInventory.crack}</p>
+              <p style={{ fontSize: '0.9rem', color: '#95a5a6' }}>
+                {Math.floor(currentInventory.crack / 30)} trays
+              </p>
+            </div>
           </div>
           <div style={{ marginTop: '1.5rem', padding: '1rem', background: '#3498db', color: 'white', borderRadius: '8px', textAlign: 'center' }}>
             <h3>Total: {currentInventory.totalEggs} eggs ({currentInventory.totalTrays} trays)</h3>
@@ -110,6 +131,9 @@ const Inventory = () => {
                 <th>Small</th>
                 <th>Medium</th>
                 <th>Large</th>
+                <th>Xlarge</th>
+                <th>Jumbo</th>
+                <th>Crack</th>
                 <th>Total Eggs</th>
                 <th>Total Trays</th>
                 <th>Actions</th>
@@ -118,7 +142,7 @@ const Inventory = () => {
             <tbody>
               {inventory.length === 0 ? (
                 <tr>
-                  <td colSpan="9" style={{ textAlign: 'center' }}>No inventory records found</td>
+                  <td colSpan="12" style={{ textAlign: 'center' }}>No inventory records found</td>
                 </tr>
               ) : (
                 inventory.map((inv) => (
@@ -129,6 +153,9 @@ const Inventory = () => {
                     <td>{inv.small}</td>
                     <td>{inv.medium}</td>
                     <td>{inv.large}</td>
+                    <td>{inv.xlarge}</td>
+                    <td>{inv.jumbo}</td>
+                    <td>{inv.crack}</td>
                     <td>{inv.totalEggs}</td>
                     <td>{inv.totalTrays}</td>
                     <td>

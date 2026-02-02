@@ -33,7 +33,8 @@ const saleItemSchema = new mongoose.Schema({
 const salesSchema = new mongoose.Schema({
   date: {
     type: Date,
-    required: true
+    required: true,
+    index: true
   },
   items: [saleItemSchema],
   totalAmount: {

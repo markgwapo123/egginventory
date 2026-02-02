@@ -125,7 +125,10 @@ const Dashboard = () => {
                 { name: 'Pullets', value: dashboard.currentInventory.pullets, emoji: '🥚' },
                 { name: 'Small', value: dashboard.currentInventory.small, emoji: '🥚' },
                 { name: 'Medium', value: dashboard.currentInventory.medium, emoji: '🥚' },
-                { name: 'Large', value: dashboard.currentInventory.large, emoji: '🥚' }
+                { name: 'Large', value: dashboard.currentInventory.large, emoji: '🥚' },
+                { name: 'Xlarge', value: dashboard.currentInventory.xlarge, emoji: '🥚' },
+                { name: 'Jumbo', value: dashboard.currentInventory.jumbo, emoji: '🥚' },
+                { name: 'Crack', value: dashboard.currentInventory.crack, emoji: '🥚' }
               ].map(item => (
                 <div key={item.name} style={{ 
                   display: 'flex', 
@@ -189,7 +192,10 @@ const Dashboard = () => {
                   { name: 'Pullets', value: dashboard.todayProduction.harvested.pullets },
                   { name: 'Small', value: dashboard.todayProduction.harvested.small },
                   { name: 'Medium', value: dashboard.todayProduction.harvested.medium },
-                  { name: 'Large', value: dashboard.todayProduction.harvested.large }
+                  { name: 'Large', value: dashboard.todayProduction.harvested.large },
+                  { name: 'Xlarge', value: dashboard.todayProduction.harvested.xlarge },
+                  { name: 'Jumbo', value: dashboard.todayProduction.harvested.jumbo },
+                  { name: 'Crack', value: dashboard.todayProduction.harvested.crack }
                 ].map(item => (
                   <div key={item.name} style={{ 
                     padding: '0.5rem',

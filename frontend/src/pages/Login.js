@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usersAPI } from '../services/api';
 
@@ -10,7 +10,27 @@ const Login = ({ onLogin }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [serverStatus, setServerStatus] = useState('checking'); // checking, ready, error
   const navigate = useNavigate();
+
+  // Wake up backend server on component mount
+  useEffect(() => {
+    const wakeUpServer = async () => {
+      try {
+        const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/api';
+        const baseURL = API_URL.replace('/api', '');
+        await fetch(`${baseURL}/api/health`, { 
+          method: 'GET',
+          signal: AbortSignal.timeout(10000) // 10 second timeout
+        });
+        setServerStatus('ready');
+      } catch (err) {
+        console.log('Server warming up...', err);
+        setServerStatus('ready'); // Continue anyway
+      }
+    };
+    wakeUpServer();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,6 +83,20 @@ const Login = ({ onLogin }) => {
           {error && (
             <div className="login-error">
               <span>⚠️</span> {error}
+            </div>
+          )}
+
+          {serverStatus === 'checking' && (
+            <div style={{ 
+              padding: '0.75rem', 
+              background: '#fff3cd', 
+              color: '#856404', 
+              borderRadius: '8px',
+              fontSize: '0.9rem',
+              marginBottom: '1rem',
+              textAlign: 'center'
+            }}>
+              ⏳ Waking up server... This may take 30-60 seconds on first visit.
             </div>
           )}
 

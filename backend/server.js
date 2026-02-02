@@ -39,6 +39,11 @@ app.get('/', (req, res) => {
   res.json({ message: 'Egg Inventory Management System API' });
 });
 
+// Health check endpoint (fast response to keep server alive)
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

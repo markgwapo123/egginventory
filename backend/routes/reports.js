@@ -115,45 +115,71 @@ router.get('/dashboard', async (req, res) => {
       });
     }
     
-    // Get today's sales
-    const todaySales = await Sales.find({
-      date: { $gte: today, $lte: endOfDay }
-    });
+    // Get today's sales with aggregation for better performance
+    const [salesSummary, todaySalesCount] = await Promise.all([
+      Sales.aggregate([
+        { $match: { date: { $gte: today, $lte: endOfDay } } },
+        {
+          $facet: {
+            totalIncome: [
+              { $group: { _id: null, total: { $sum: '$totalAmount' } } }
+            ],
+            salesBySize: [
+              { $unwind: '$items' },
+              {
+                $group: {
+                  _id: '$items.size',
+                  totalPieces: {
+                    $sum: { $add: [{ $multiply: ['$items.trays', 30] }, '$items.pieces'] }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]),
+      Sales.countDocuments({ date: { $gte: today, $lte: endOfDay } })
+    ]);
     
-    const totalIncome = todaySales.reduce((sum, sale) => sum + sale.totalAmount, 0);
-    
-    // Calculate sales by size for today
     const todaySalesBySize = {
       peewee: 0, pullets: 0, small: 0, medium: 0, large: 0, xlarge: 0, jumbo: 0, crack: 0
     };
     
-    todaySales.forEach(sale => {
-      sale.items.forEach(item => {
-        const totalPieces = (item.trays * 30) + item.pieces;
-        todaySalesBySize[item.size] += totalPieces;
+    let totalIncome = 0;
+    if (salesSummary.length > 0) {
+      if (salesSummary[0].totalIncome.length > 0) {
+        totalIncome = salesSummary[0].totalIncome[0].total;
+      }
+      salesSummary[0].salesBySize.forEach(item => {
+        todaySalesBySize[item._id] = item.totalPieces;
       });
-    });
+    }
     
     // Get current inventory from latest production record and subtract ALL sales to date
-    const latestProduction = await Production.findOne().sort({ date: -1, createdAt: -1 });
+    const latestProduction = await Production.findOne().sort({ date: -1, createdAt: -1 }).lean();
     
     let currentInventory = null;
     if (latestProduction) {
-      // Get ALL sales from the latest production date until now
-      const allSalesFromProduction = await Sales.find({
-        date: { $gte: latestProduction.date }
-      });
+      // Use aggregation to calculate total sales by size since latest production
+      const salesAgg = await Sales.aggregate([
+        { $match: { date: { $gte: latestProduction.date } } },
+        { $unwind: '$items' },
+        {
+          $group: {
+            _id: '$items.size',
+            totalPieces: {
+              $sum: { $add: [{ $multiply: ['$items.trays', 30] }, '$items.pieces'] }
+            }
+          }
+        }
+      ]);
       
-      // Calculate total sales by size since latest production
       const totalSalesBySize = {
         peewee: 0, pullets: 0, small: 0, medium: 0, large: 0, xlarge: 0, jumbo: 0, crack: 0
       };
       
-      allSalesFromProduction.forEach(sale => {
-        sale.items.forEach(item => {
-          const totalPieces = (item.trays * 30) + item.pieces;
-          totalSalesBySize[item.size] += totalPieces;
-        });
+      salesAgg.forEach(item => {
+        totalSalesBySize[item._id] = item.totalPieces;
       });
       
       const sizes = ['peewee', 'pullets', 'small', 'medium', 'large', 'xlarge', 'jumbo', 'crack'];
@@ -193,7 +219,7 @@ router.get('/dashboard', async (req, res) => {
     
     res.json({
       todayProduction: todayProduction || null,
-      todaySales: todaySales.length,
+      todaySales: todaySalesCount,
       todayIncome: totalIncome,
       weeklyIncome,
       currentInventory: currentInventory || null

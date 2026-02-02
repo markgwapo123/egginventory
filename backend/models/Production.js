@@ -14,7 +14,8 @@ const eggSizeSchema = new mongoose.Schema({
 const productionSchema = new mongoose.Schema({
   date: {
     type: Date,
-    required: true
+    required: true,
+    index: true
   },
   beginningBalance: eggSizeSchema,
   harvested: eggSizeSchema,
