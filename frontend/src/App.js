@@ -10,6 +10,7 @@ import Sales from './pages/Sales';
 import Reports from './pages/Reports';
 import Profile from './pages/Profile';
 import Users from './pages/Users';
+import Tutorial from './pages/Tutorial';
 import './index.css';
 
 function App() {
@@ -55,6 +56,7 @@ function App() {
           <Route path="/reports" element={<Reports />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/tutorial" element={<Tutorial />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
