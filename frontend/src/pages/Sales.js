@@ -121,7 +121,8 @@ const Sales = () => {
           {inventory && (
             <div style={{ padding: '1rem', background: '#e8f5e9', borderRadius: '4px', marginBottom: '1rem' }}>
               <strong>Available Stock:</strong> Peewee: {inventory.peewee} | Pullets: {inventory.pullets} | 
-              Small: {inventory.small} | Medium: {inventory.medium} | Large: {inventory.large}
+              Small: {inventory.small} | Medium: {inventory.medium} | Large: {inventory.large} | 
+              Xlarge: {inventory.xlarge} | Jumbo: {inventory.jumbo} | Crack: {inventory.crack}
             </div>
           )}
 
@@ -140,6 +141,9 @@ const Sales = () => {
                   <option value="small">Small</option>
                   <option value="medium">Medium</option>
                   <option value="large">Large</option>
+                  <option value="xlarge">Xlarge</option>
+                  <option value="jumbo">Jumbo</option>
+                  <option value="crack">Crack</option>
                 </select>
               </div>
               <div className="form-group" style={{ flex: 1 }}>

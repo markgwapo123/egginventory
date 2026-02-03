@@ -43,12 +43,12 @@ router.post('/', async (req, res) => {
     
     const beginningBalance = previousProduction 
       ? previousProduction.endingBalance 
-      : { peewee: 0, pullets: 0, small: 0, medium: 0, large: 0 };
+      : { peewee: 0, pullets: 0, small: 0, medium: 0, large: 0, xlarge: 0, jumbo: 0, crack: 0 };
     
     const production = new Production({
       date: new Date(date),
       beginningBalance,
-      harvested: harvested || { peewee: 0, pullets: 0, small: 0, medium: 0, large: 0 }
+      harvested: harvested || { peewee: 0, pullets: 0, small: 0, medium: 0, large: 0, xlarge: 0, jumbo: 0, crack: 0 }
     });
     
     const newProduction = await production.save();
@@ -112,7 +112,10 @@ async function updateInventory(date, balance) {
         pullets: balance.pullets,
         small: balance.small,
         medium: balance.medium,
-        large: balance.large
+        large: balance.large,
+        xlarge: balance.xlarge,
+        jumbo: balance.jumbo,
+        crack: balance.crack
       },
       { upsert: true, new: true }
     );

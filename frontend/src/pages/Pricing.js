@@ -7,7 +7,7 @@ const Pricing = () => {
   const [editing, setEditing] = useState(null);
   const [message, setMessage] = useState({ text: '', type: '' });
 
-  const eggSizes = ['peewee', 'pullets', 'small', 'medium', 'large'];
+  const eggSizes = ['peewee', 'pullets', 'small', 'medium', 'large', 'xlarge', 'jumbo', 'crack'];
 
   useEffect(() => {
     fetchPricing();
@@ -34,18 +34,32 @@ const Pricing = () => {
     const priceData = pricing.find(p => p.size === size);
     setEditing({
       size,
-      pricePerTray: priceData.pricePerTray,
-      pricePerPiece: priceData.pricePerPiece
+      pricePerTray: priceData?.pricePerTray || 0,
+      pricePerPiece: priceData?.pricePerPiece || 0
     });
   };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await pricingAPI.update(editing.size, {
-        pricePerTray: parseFloat(editing.pricePerTray),
-        pricePerPiece: parseFloat(editing.pricePerPiece)
-      });
+      // Check if pricing exists for this size
+      const existingPrice = pricing.find(p => p.size === editing.size);
+      
+      if (existingPrice) {
+        // Update existing
+        await pricingAPI.update(editing.size, {
+          pricePerTray: parseFloat(editing.pricePerTray),
+          pricePerPiece: parseFloat(editing.pricePerPiece)
+        });
+      } else {
+        // Create new
+        await pricingAPI.createOrUpdate({
+          size: editing.size,
+          pricePerTray: parseFloat(editing.pricePerTray),
+          pricePerPiece: parseFloat(editing.pricePerPiece)
+        });
+      }
+      
       setMessage({ text: 'Pricing updated successfully!', type: 'success' });
       setEditing(null);
       fetchPricing();

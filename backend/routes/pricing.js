@@ -66,13 +66,16 @@ router.put('/:size', async (req, res) => {
 // Initialize default pricing
 router.post('/initialize', async (req, res) => {
   try {
-    const sizes = ['peewee', 'pullets', 'small', 'medium', 'large'];
+    const sizes = ['peewee', 'pullets', 'small', 'medium', 'large', 'xlarge', 'jumbo', 'crack'];
     const defaultPrices = {
       peewee: { tray: 100, piece: 4 },
       pullets: { tray: 120, piece: 5 },
       small: { tray: 140, piece: 5 },
       medium: { tray: 160, piece: 6 },
-      large: { tray: 180, piece: 7 }
+      large: { tray: 180, piece: 7 },
+      xlarge: { tray: 200, piece: 8 },
+      jumbo: { tray: 220, piece: 9 },
+      crack: { tray: 80, piece: 3 }
     };
     
     const pricingPromises = sizes.map(size => 
